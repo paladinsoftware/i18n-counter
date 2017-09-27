@@ -21,12 +21,16 @@ module I18n
 
     module Hook
       def lookup(locale, key, scope = [], options = {})
-        return super unless ENV['ENABLE_I18N_COUNTER'] == 'true'
+        return super unless I18n::Counter.enabled?
         separator = options[:separator] || I18n.default_separator
         flat_key = I18n.normalize_keys(locale, key, scope, separator).join(separator)
         I18nRedis.connection.incr(flat_key)
         super
       end
+    end
+
+    def self.enabled?
+      ENV['ENABLE_I18N_COUNTER'] == 'true'
     end
   end
   Backend::Simple.prepend(Counter::Hook)
