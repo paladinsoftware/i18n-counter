@@ -35,5 +35,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "mock_redis", "< 1"
   spec.add_dependency 'i18n', '< 1'
+  spec.add_dependency 'i18n-tasks', '< 1'
 
 end

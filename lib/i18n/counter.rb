@@ -1,8 +1,13 @@
 require 'i18n'
 require "i18n/counter/version"
+require "i18n/counter/summary"
 
 module I18n
   module Counter
+
+    DEFAULT_LOCALE = 'en'
+    GLOBAL_LOCALE = 'global'
+
     module I18nRedis
       class << self
         attr_accessor :redis
@@ -18,8 +23,11 @@ module I18n
     module Hook
       def lookup(locale, key, scope = [], options = {})
         separator = options[:separator] || I18n.default_separator
-        flat_key = I18n.normalize_keys(locale, key, scope, separator).join(separator)
-        I18nRedis.connection.incr(flat_key)
+        global_scope = GLOBAL_LOCALE # to also count the translation key in general, disregarding the current locale scope
+        [locale, global_scope].each do |l|
+          flat_key = I18n.normalize_keys(l, key, scope, separator).join(separator)
+          I18nRedis.connection.incr(flat_key)
+        end
         super
       end
     end
