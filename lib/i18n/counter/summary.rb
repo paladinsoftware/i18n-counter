@@ -24,13 +24,19 @@ module I18n
 
       def call
         I18n::Tasks::BaseTask.new.data[DEFAULT_LOCALE].select_keys do |k,v|
-          if accessed_keys.index("#{GLOBAL_LOCALE}.#{k}") == nil
-            @unused << k.sub(DEFAULT_LOCALE, '')
-          else
+          if translation_used?(k)
             @used << k.sub(DEFAULT_LOCALE, '')
+          else
+            @unused << k.sub(DEFAULT_LOCALE, '')
           end
         end
         self
+      end
+
+      def translation_used?(k)
+        I18n.available_locales.detect do |locale|
+          accessed_keys(locale).index("#{locale}.#{k}") == 0
+        end
       end
     end
   end

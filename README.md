@@ -2,6 +2,12 @@
 
 Learn about locales you rarely or never use.
 
+WIP - This is Work In Progress.
+
+This gem hooks into the I18n lookup process and reports on keys being accessed. It connects to Redis and increments the counter for the key.
+
+That way you can later compare with your project locale files and identify keys that has not had a single hit. It increments the counter per key per language/locale, so you may identify usages across locales as well.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -10,17 +16,49 @@ Add this line to your application's Gemfile:
 gem 'i18n-counter'
 ```
 
-And then execute:
+To enable the tracking
 
-    $ bundle
+    $ export ENABLE_I18N_COUNTER=true
 
-Or install it yourself as:
+To disable, set
 
-    $ gem install i18n-counter
+    $ export ENABLE_I18N_COUNTER=true
 
-## Usage
+To configure what Redis will it use, i18n-counter will look for ENV vars in this order
 
-TODO: Write usage instructions here
+```ruby
+ENV['I18N_REDIS_URL'] || ENV[ENV['REDIS_PROVIDER'] || 'REDIS_URL']
+```
+
+if all is nil, it'll be a plain `Redis.new`, using default local redis instance.
+
+## WARNINGS
+
+### Speed
+This solution slows down your lookups. Not by much, but depending on the number of lookups you do per request in your app.
+
+Benchmark shows approx 5x slower (note that this is 5x of something fast.). doing 100.000 lookups with/without REDIS hook
+
+`100000.times I18n.t('en.test')`:
+
+| Benchmark | Seconds   | Sec pr translation |
+|:-----------:| ---------:| -------:|
+| with redis  | 48.280000 | 0.0004828 |
+| without     |  9.010000 | 0.0004828 |
+
+
+### Redis size and connections
+
+If you go with the default and you use Sidekiq, you are likely to be using same Redis instance. The i18n-counter doesn't take a lot of space, that dependes on the size of your locales, but it still consumes some.
+Using same Redis instance is mainly risky for the reason of human error. A purge, flushall, would also clean the sidekiq queues.
+
+If you run many processes (dynos, puma threads or other), you create a Redis connection for all. Be aware of that.
+
+### WIP
+
+missing summary, reports, movement over time, resets.
+
+Hey, I just got started, need to allow production to gather data so I can make reports...
 
 ## Development
 

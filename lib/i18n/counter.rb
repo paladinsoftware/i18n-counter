@@ -14,7 +14,7 @@ module I18n
           @redis ||= Redis.new url: determine_redis_provider
         end
         def determine_redis_provider
-          ENV[ENV['I18N_REDIS_PROVIDER'] || ENV['REDIS_PROVIDER'] || 'REDIS_URL']
+          ENV['I18N_REDIS_URL'] || ENV[ENV['REDIS_PROVIDER'] || 'REDIS_URL']
         end
       end
     end
