@@ -1,6 +1,7 @@
 module I18n
   module Counter
     class Summary
+      GLOBAL_LOCALE = 'global'
       attr :redis, :used, :unused
       def initialize
         @redis = I18nRedis.connection

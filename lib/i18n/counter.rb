@@ -6,7 +6,6 @@ module I18n
   module Counter
 
     DEFAULT_LOCALE = 'en'
-    GLOBAL_LOCALE = 'global'
 
     module I18nRedis
       class << self
@@ -24,11 +23,8 @@ module I18n
       def lookup(locale, key, scope = [], options = {})
         return super unless ENV['ENABLE_I18N_COUNTER'] == 'true'
         separator = options[:separator] || I18n.default_separator
-        global_scope = GLOBAL_LOCALE # to also count the translation key in general, disregarding the current locale scope
-        [locale, global_scope].each do |l|
-          flat_key = I18n.normalize_keys(l, key, scope, separator).join(separator)
-          I18nRedis.connection.incr(flat_key)
-        end
+        flat_key = I18n.normalize_keys(locale, key, scope, separator).join(separator)
+        I18nRedis.connection.incr(flat_key)
         super
       end
     end
