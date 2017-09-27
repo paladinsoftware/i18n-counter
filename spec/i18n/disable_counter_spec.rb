@@ -1,10 +1,9 @@
-ENV['ENABLE_I18N_COUNTER'] = 'false'
-require "bundler/setup"
-require 'mock_redis'
-require "i18n/counter"
+require "spec_helper"
 
 RSpec.describe I18n::Counter do
-  it "no mixin when not enabled" do
-    expect(I18n::Backend::Simple).not_to include(I18n::Counter::Hook)
+  it "no calling redis when not enabled" do
+    ENV['ENABLE_I18N_COUNTER'] = 'false'
+    expect(I18n::Counter::I18nRedis).not_to receive(:connection)
+    I18n.backend.translate(:en, 'foo.bar')
   end
 end

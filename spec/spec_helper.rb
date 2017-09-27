@@ -1,6 +1,5 @@
 require "bundler/setup"
 require 'mock_redis'
-ENV['ENABLE_I18N_COUNTER'] = 'true'
 require "i18n/counter"
 Redis = MockRedis
 
@@ -11,4 +10,9 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+  config.before :suite do
+    ENV['ENABLE_I18N_COUNTER'] = 'true'
+  end
+  # seed
+  I18n.backend.store_translations(:en, foo: { bar: 'baz' })
 end

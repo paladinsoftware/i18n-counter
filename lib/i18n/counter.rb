@@ -22,6 +22,7 @@ module I18n
 
     module Hook
       def lookup(locale, key, scope = [], options = {})
+        return super unless ENV['ENABLE_I18N_COUNTER'] == 'true'
         separator = options[:separator] || I18n.default_separator
         global_scope = GLOBAL_LOCALE # to also count the translation key in general, disregarding the current locale scope
         [locale, global_scope].each do |l|
@@ -32,5 +33,5 @@ module I18n
       end
     end
   end
-  Backend::Simple.prepend(Counter::Hook) if ENV['ENABLE_I18N_COUNTER'] == 'true' #requires restart
+  Backend::Simple.prepend(Counter::Hook)
 end
