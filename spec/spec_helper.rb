@@ -1,7 +1,7 @@
 require "bundler/setup"
-require "i18n/counter"
-
 require 'mock_redis'
+ENV['ENABLE_I18N_COUNTER'] = 'true'
+require "i18n/counter"
 Redis = MockRedis
 
 RSpec.configure do |config|

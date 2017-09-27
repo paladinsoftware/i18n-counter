@@ -32,5 +32,5 @@ module I18n
       end
     end
   end
-  Backend::Simple.prepend(Counter::Hook)
+  Backend::Simple.prepend(Counter::Hook) if ENV['ENABLE_I18N_COUNTER'] == 'true' #requires restart
 end
