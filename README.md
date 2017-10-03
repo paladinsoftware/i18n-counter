@@ -41,10 +41,10 @@ Benchmark shows approx 5x slower (note that this is 5x of something fast.). doin
 
 `100000.times I18n.t('en.test')`:
 
-| Benchmark | Seconds   | Sec pr translation |
-|:-----------:| ---------:| -------:|
-| with redis  | 48.280000 | 0.0004828 |
-| without     |  9.010000 | 0.0004828 |
+| Benchmark  | Seconds   | Sec pr translation |
+|:----------:| ---------:| ---------:|
+| with redis | 48.280000 | 0.0004828 |
+| without    |  9.010000 | 0.0000901 |
 
 
 ### Redis size and connections

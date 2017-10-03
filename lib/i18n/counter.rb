@@ -1,4 +1,6 @@
 require 'i18n'
+require 'i18n/tasks'
+require 'redis'
 require "i18n/counter/version"
 require "i18n/counter/summary"
 

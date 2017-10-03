@@ -5,8 +5,8 @@ RSpec.describe I18n::Counter do
     expect(I18n::Counter::VERSION).not_to be nil
   end
 
-  context "translate" do
-    context "present translation" do
+  context "on translate lookup" do
+    context "translation found" do
       it "increments counter" do
         expect{ I18n.backend.translate(:en, 'foo.bar') }.to change{
           I18n::Counter::I18nRedis.connection.get('en.foo.bar').to_i
