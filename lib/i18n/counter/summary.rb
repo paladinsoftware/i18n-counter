@@ -66,16 +66,24 @@ module I18n
         end
 
         def available_keys locale
-          I18n::Tasks::BaseTask.new.data[locale].select_keys do
-            yield
+          local_locale(locale).select_keys do |k,v|
+            yield k
           end
+        end
+
+        def local_locale locale
+          load_locales.data[locale]
+        end
+
+        def load_locales
+          @_locales ||= I18n::Tasks::BaseTask.new
         end
       end
 
       include AvailableKeys
 
       def call
-        available_keys(DEFAULT_LOCALE) do |k,v|
+        available_keys(DEFAULT_LOCALE) do |k|
           if translation_used?(k)
             @used << k.sub(DEFAULT_LOCALE, '')
           else

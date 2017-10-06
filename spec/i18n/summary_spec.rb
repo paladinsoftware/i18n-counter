@@ -2,9 +2,8 @@ require "spec_helper"
 
 RSpec.describe I18n::Counter::Summary do
   let(:redis) { I18n::Counter::I18nRedis.connection }
+
   context "redis registered keys" do
-
-
     before do
       redis.incr('en.foo.bar')
       redis.incr('en.foo.bar.baz')
@@ -35,4 +34,21 @@ RSpec.describe I18n::Counter::Summary do
       end
     end
   end
+
+  context "listed locales" do
+    it "lists keys of own locales only, not gem dependencies"
+  end
+
+  context "listed locales and redis registry" do
+    context "unused keys" do
+      it "across all languages"
+
+      it "for english only" do
+        keys = []
+        subject.available_keys('en') { |k| keys << k}
+        expect{ keys -= ["test.title", "test.description"]}.to change{ keys.size }.by(-2)
+      end
+    end
+  end
+
 end
