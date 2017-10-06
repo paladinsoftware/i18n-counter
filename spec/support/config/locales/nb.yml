@@ -1,11 +1,11 @@
 en:
   test:
-    title: This is a test
-    description: Yes it is
-  home: Home
+    title: Dette er en test
+    description: Ja det er det
+  home: Hjem
   foo:
     bar:
-      default: Beer
+      default: Øl
       baz: foo bar baz
       th:
         anotherlanguage: Thai
@@ -13,3 +13,4 @@ en:
       bar: foo baz bar
   food:
     vegan: Vegan
+

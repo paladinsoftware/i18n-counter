@@ -5,13 +5,13 @@ RSpec.describe I18n::Counter::Summary do
 
   context "redis registered keys" do
     before do
-      redis.incr('en.foo.bar')
+      redis.incr('en.foo.bar.default')
       redis.incr('en.foo.bar.baz')
       redis.incr('en.foo.baz.bar')
       redis.incr('en.foo.baz.bar') #2nd access
       redis.incr('nb.foo.bar.th.anotherlanguage')
-      redis.incr('en.bar.food.not.healthy')
-      redis.incr('nb.foo.bar') # same key, another locale
+      redis.incr('en.food.vegan')
+      redis.incr('nb.foo.bar.default') # same key, another locale
     end
 
     context "key lookup count" do
@@ -33,6 +33,24 @@ RSpec.describe I18n::Counter::Summary do
         expect(subject.sum_by_locale('en')).to eq(5)
       end
     end
+
+    context "compared to the available keys from locale files" do
+      context "unused keys" do
+        it "across all languages" do
+          res = subject.call.unused
+          expect{ res -= ['home','test.title'] }.to change{ res.size }.by(-2)
+        end
+
+        it "for english only"
+      end
+
+      context "used keys" do
+        it "across all languages" do
+          expect(subject.call.used.size).to eq(5)
+        end
+      end
+    end
+
   end
 
   context "listed locales" do
@@ -41,15 +59,4 @@ RSpec.describe I18n::Counter::Summary do
       expect{ keys -= ["test.title", "test.description"]}.to change{ keys.size }.by(-2)
     end
   end
-
-  context "listed locales and redis registry" do
-    context "unused keys" do
-      it "across all languages"
-
-      it "for english only" do
-
-      end
-    end
-  end
-
 end

@@ -19,17 +19,17 @@ module I18n
 
         def accessed_keys_global
           I18n.available_locales.each do |locale|
-            locale_prefix = "#{locale}."
-            accessed_keys(locale).each do |lkey|
-              key = lkey.sub(locale_prefix, '')
-              accessed_keys('global') << key unless accessed_key?('global', key)
+            accessed_keys(locale).each do |k|
+              key =  strip_locale_from_key locale, k
+              accessed_keys('global') << "global.#{key}" unless accessed_key?('global', key)
             end
           end
           accessed_keys('global')
         end
 
         def accessed_key? locale, key
-          accessed_keys(locale).index(key) == 0
+          k = add_locale_to_key(locale, key)
+          accessed_keys(locale).include?(k)
         end
 
         def count_by_locale locale
@@ -61,7 +61,7 @@ module I18n
       module AvailableKeys
         def translation_used?(k)
           I18n.available_locales.detect do |locale|
-            accessed_keys(locale).index("#{locale}.#{k}") == 0
+            accessed_key?(locale, "#{locale}.#{k}")
           end
         end
 
@@ -88,15 +88,25 @@ module I18n
 
       include AvailableKeys
 
-      def call
-        available_keys(DEFAULT_LOCALE) do |k|
-          if translation_used?(k)
-            @used << k.sub(DEFAULT_LOCALE, '')
+      def call locale = 'en'
+        available_keys(locale) do |k|
+          key = strip_locale_from_key locale, k
+          if translation_used?(key)
+            @used << key
           else
-            @unused << k.sub(DEFAULT_LOCALE, '')
+            @unused << key
           end
         end
         self
+      end
+
+      private
+      def strip_locale_from_key locale, key
+        key.sub("#{locale}.", '')
+      end
+
+      def add_locale_to_key locale, key
+        key =~ /^#{locale}\.*/ ? key : "#{locale}.#{key}"
       end
     end
   end
