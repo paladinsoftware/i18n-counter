@@ -65,10 +65,16 @@ module I18n
           end
         end
 
-        def available_keys locale
+        def available_keys locale = 'en'
           local_locale(locale).select_keys do |k,v|
             yield k
           end
+        end
+
+        def list_available_keys locale = 'en'
+          keys = []
+          available_keys(locale) { |k| keys << k}
+          keys
         end
 
         def local_locale locale

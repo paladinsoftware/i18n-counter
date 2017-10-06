@@ -36,7 +36,10 @@ RSpec.describe I18n::Counter::Summary do
   end
 
   context "listed locales" do
-    it "lists keys of own locales only, not gem dependencies"
+    it "all available keys" do
+      keys = subject.list_available_keys
+      expect{ keys -= ["test.title", "test.description"]}.to change{ keys.size }.by(-2)
+    end
   end
 
   context "listed locales and redis registry" do
@@ -44,9 +47,7 @@ RSpec.describe I18n::Counter::Summary do
       it "across all languages"
 
       it "for english only" do
-        keys = []
-        subject.available_keys('en') { |k| keys << k}
-        expect{ keys -= ["test.title", "test.description"]}.to change{ keys.size }.by(-2)
+
       end
     end
   end
