@@ -34,7 +34,7 @@ RSpec.describe I18n::Counter::Summary do
       end
     end
 
-    context "compared to the available keys from locale files" do
+    context "compared to the native keys from locale files" do
       context "unused keys" do
         it "across all languages" do
           res = subject.call.unused
@@ -54,8 +54,8 @@ RSpec.describe I18n::Counter::Summary do
   end
 
   context "listed locales" do
-    it "all available keys" do
-      keys = subject.list_available_keys
+    it "all native keys" do
+      keys = subject.list_native_keys
       expect{ keys -= ["test.title", "test.description"]}.to change{ keys.size }.by(-2)
     end
   end

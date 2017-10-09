@@ -1,6 +1,7 @@
 module I18n
   module Counter
     class Summary
+      DEFAULT_LOCALE = 'en'
 
       attr :redis, :used, :unused
       def initialize
@@ -58,22 +59,22 @@ module I18n
 
       include RedisCounts
 
-      module AvailableKeys
+      module NativeKeys
         def translation_used?(k)
           I18n.available_locales.detect do |locale|
             accessed_key?(locale, "#{locale}.#{k}")
           end
         end
-
-        def available_keys locale = 'en'
+DEFAULT_LOCALE
+        def native_keys locale = DEFAULT_LOCALE
           local_locale(locale).select_keys do |k,v|
             yield k
           end
         end
 
-        def list_available_keys locale = 'en'
+        def list_native_keys locale = DEFAULT_LOCALE
           keys = []
-          available_keys(locale) { |k| keys << k}
+          native_keys(locale) { |k| keys << k}
           keys
         end
 
@@ -86,10 +87,10 @@ module I18n
         end
       end
 
-      include AvailableKeys
+      include NativeKeys
 
-      def call locale = 'en'
-        available_keys(locale) do |k|
+      def call locale = DEFAULT_LOCALE
+        native_keys(locale) do |k|
           key = strip_locale_from_key locale, k
           if translation_used?(key)
             @used << key
